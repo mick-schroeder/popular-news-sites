@@ -61,6 +61,8 @@ const { hideTitle = false, ...head } = Astro.props
               Ratings data from{" "}
               <a
                 href="https://mdblist.com/"
+                target="_blank"
+                rel="noopener"
                 class="underline hover:text-foreground"
               >
                 MDBList
@@ -69,7 +71,12 @@ const { hideTitle = false, ...head } = Astro.props
             </span>
           </p>
           <p class="flex items-center gap-2">
-            <a href="https://www.themoviedb.org/" aria-label="TMDB">
+            <a
+              href="https://www.themoviedb.org/"
+              target="_blank"
+              rel="noopener"
+              aria-label="TMDB"
+            >
               <BrandIcon icon={siThemoviedatabase} />
             </a>
             <span>

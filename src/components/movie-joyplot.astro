@@ -1,9 +1,9 @@
 ---
-// A movie's year as a joyplot: its ridge inked bold among a few made-up low ridges,
+// A movie's years in the standings as one joyplot: its ridge inked bold among a few made-up low ridges,
 // there only for the look (later rows in front, its own on top), with its key nights pinned to it.
 // Full page width, stretched to whatever height the page leaves it; rendered at build time.
 import * as d3 from "d3"
-import { getYear, type MovieSummary } from "@/lib/movies"
+import { getSpan, type MovieSummary } from "@/lib/movies"
 import {
   DAY,
   handInked,
@@ -15,11 +15,13 @@ import {
 
 interface Props {
   movie: MovieSummary
-  year: number
 }
 
-const { movie, year } = Astro.props
-const { start, end, ridges } = await getYear(year)
+const { movie } = Astro.props
+const first = movie.years[0]!
+const last = movie.years.at(-1)!
+const span = first === last ? `${first}` : `${first}–${last}`
+const { start, end, ridges } = await getSpan(first, last)
 const id = String(movie.id)
 const ridge = ridges.find((r) => r.id === id)!
 
@@ -75,15 +77,17 @@ const at = (date: string): [number, number] => {
     inked[Math.min(inked.length - 1, Math.round((utc(date) - start) / DAY))]!
   return [px, base + py]
 }
-// The year heads the chart, so the pins leave it out: "May 17"
+// A single year heads the chart, so the pins leave it out: "May 17"; over
+// several they keep it: "May 17, 2020"
 const day = (date: string) =>
   new Date(utc(date)).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
+    year: first === last ? undefined : "numeric",
     timeZone: "UTC",
   })
 const inYear = (date: string | null): date is string =>
-  !!date?.startsWith(`${year}-`)
+  !!date && utc(date) >= start && utc(date) < end
 const { release_date, firstNight, bestNight, lastNight, best, current } = movie
 const pins: { date: string; label: string; accent?: boolean }[] = []
 const released = inYear(release_date) && utc(release_date) < end
@@ -168,27 +172,29 @@ const spots = d3.least(
   problems
 )!
 
-const months = d3
-  .utcMonths(new Date(start), new Date(end - 14 * DAY))
+// Every month for one year; over several, fewer, with each January as its year
+const months = d3.utcMonth
+  .every(last - first + 1)!
+  .range(new Date(start), new Date(end - 14 * DAY))
   .map((date) => ({
     left: (x(date) / W) * 100,
-    label: date.toLocaleDateString("en-US", {
-      month: "short",
-      timeZone: "UTC",
-    }),
+    label:
+      first !== last && date.getUTCMonth() === 0
+        ? String(date.getUTCFullYear())
+        : date.toLocaleDateString("en-US", { month: "short", timeZone: "UTC" }),
   }))
 ---
 
 <figure class="movie-joyplot">
   <figcaption class="year px-4 font-heading font-bold sm:px-6">
-    {year}
+    {span}
   </figcaption>
   <div class="plot">
     <svg
       viewBox={`0 0 ${W} ${H}`}
       preserveAspectRatio="none"
       role="img"
-      aria-label={`How high ${movie.title} ranked in ${year}`}
+      aria-label={`How high ${movie.title} ranked in ${span}`}
     >
       {/* Its own ridge drawn last, so no row covers it */}
       {rows

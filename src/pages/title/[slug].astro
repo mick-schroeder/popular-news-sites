@@ -98,13 +98,20 @@ const jsonLd = [
   <section class="flex flex-1 flex-col overflow-hidden">
     <div class="flex items-start gap-4 px-4 pt-6 sm:gap-6 sm:px-6 sm:pt-10">
       {movie.poster_url && (
-        <img
-          src={movie.poster_url}
-          alt=""
-          width="500"
-          height="750"
-          class="w-20 shrink-0 rounded-sm sm:w-36"
-        />
+        <div class="relative w-20 shrink-0 sm:w-36">
+          {movie.current && (
+            <Badge className="absolute top-2 left-2 font-bold tabular-nums">
+              {movie.current}
+            </Badge>
+          )}
+          <img
+            src={movie.poster_url}
+            alt=""
+            width="500"
+            height="750"
+            class="rounded-sm"
+          />
+        </div>
       )}
       <div>
         <h1 class="font-heading text-[clamp(2.25rem,8vw,6rem)] leading-[0.88] font-extrabold tracking-[-0.055em] text-balance">
@@ -126,7 +133,12 @@ const jsonLd = [
           <ul class="flex flex-wrap gap-2">
             {links.map(({ name, url }) => (
               <li>
-                <a href={url} class={buttonVariants({ variant: "outline" })}>
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener"
+                  class={buttonVariants({ variant: "outline" })}
+                >
                   {ICONS[name] && <BrandIcon icon={ICONS[name]} />}
                   {name}
                 </a>
@@ -139,9 +151,7 @@ const jsonLd = [
 
     {/* The ridges take whatever height is left */}
     <div class="flex flex-1 flex-col">
-      {movie.years.map((year) => (
-        <MovieJoyplot movie={movie} year={year} />
-      ))}
+      {movie.years.length > 0 && <MovieJoyplot movie={movie} />}
     </div>
 
     <!-- Deliberately not shadcn Pagination: the big ranks are part of the site's look -->

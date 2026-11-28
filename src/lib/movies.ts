@@ -4,13 +4,7 @@ import { readFile } from "node:fs/promises"
 import { join } from "node:path"
 import { FIRST_YEAR, SITE } from "@/consts"
 import { moviePath } from "@/lib/links"
-import {
-  RUNOUT_DAYS,
-  type Ridge,
-  ridges,
-  yearOf,
-  yearSpan,
-} from "@/lib/ridgeline"
+import { RUNOUT_DAYS, type Ridge, ridges, yearSpan } from "@/lib/ridgeline"
 import type { Catalog, CatalogMovie, ListMovie, RankDay } from "@/lib/types"
 
 /** A published file, or null if neither public/ nor the live site has it. */
@@ -50,27 +44,33 @@ export function getHistory() {
   return history
 }
 
-const years = new Map<number, Promise<YearRidges>>()
-export interface YearRidges {
+const spans = new Map<string, Promise<SpanRidges>>()
+export interface SpanRidges {
   start: number
   end: number
-  /** Every movie ranked that year, in the order they joined, each ridge
+  /** Every movie ranked in the span, in the order they joined, each ridge
    * running RUNOUT_DAYS past the end. */
   ridges: Ridge[]
 }
-/** A year's ridges, worked out once for every movie page that shows the year. */
-export function getYear(year: number): Promise<YearRidges> {
-  if (!years.has(year)) {
-    years.set(
-      year,
+/** The ridges from the start of `first` up to the last night of `last`, worked
+ * out once for every movie page that spans those years. */
+export function getSpan(first: number, last: number): Promise<SpanRidges> {
+  const key = `${first}-${last}`
+  if (!spans.has(key)) {
+    spans.set(
+      key,
       getHistory().then(({ rankings, catalog }) => {
-        const data = yearOf(rankings, catalog, year)
+        const days = rankings.filter((night) => {
+          const year = Number(night.date.slice(0, 4))
+          return year >= first && year <= last
+        })
+        const data = { year: first, days, movies: catalog }
         const { start, end } = yearSpan(data)
         return { start, end, ridges: ridges(data, start, end, RUNOUT_DAYS) }
       })
     )
   }
-  return years.get(year)!
+  return spans.get(key)!
 }
 
 /** Every year with a page, newest first. */

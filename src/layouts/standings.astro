@@ -67,7 +67,12 @@ const jsonLd = [
           <Braces aria-hidden="true" />
           JSON feed
         </a>
-        <a href={SITE.code} class={buttonVariants({ variant: "outline" })}>
+        <a
+          href={SITE.code}
+          target="_blank"
+          rel="noopener"
+          class={buttonVariants({ variant: "outline" })}
+        >
           <BrandIcon icon={siGithub} />
           Source
         </a>
@@ -75,6 +80,8 @@ const jsonLd = [
           <>
             <a
               href={`https://mdblist.com/lists/${followLists.mdblist}`}
+              target="_blank"
+              rel="noopener"
               class={buttonVariants({ variant: "outline" })}
             >
               <BrandIcon icon={siMdblist} />
@@ -82,6 +89,8 @@ const jsonLd = [
             </a>
             <a
               href={`https://www.themoviedb.org/list/${followLists.tmdb}`}
+              target="_blank"
+              rel="noopener"
               class={buttonVariants({ variant: "outline" })}
             >
               <BrandIcon icon={siThemoviedatabase} />

@@ -19,7 +19,12 @@ const here = Astro.site?.origin
       {NETWORK.filter(({ url }) => new URL(url).origin !== here).map(
         ({ name, url }) => (
           <li>
-            <a href={url} class="hover:text-foreground">
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener"
+              class="hover:text-foreground"
+            >
               {name}
             </a>
           </li>
@@ -30,15 +35,30 @@ const here = Astro.site?.origin
   <p class="flex flex-wrap gap-x-4 gap-y-1">
     <span>
       {`© ${year} `}
-      <a href={OWNER.url} class="hover:text-foreground">
+      <a
+        href={OWNER.url}
+        target="_blank"
+        rel="noopener"
+        class="hover:text-foreground"
+      >
         {OWNER.name}
       </a>
     </span>
-    <a href={OWNER.privacy} class="hover:text-foreground">
+    <a
+      href={OWNER.privacy}
+      target="_blank"
+      rel="noopener"
+      class="hover:text-foreground"
+    >
       Privacy policy
     </a>
     {code && (
-      <a href={code} class="hover:text-foreground">
+      <a
+        href={code}
+        target="_blank"
+        rel="noopener"
+        class="hover:text-foreground"
+      >
         Source code
       </a>
     )}

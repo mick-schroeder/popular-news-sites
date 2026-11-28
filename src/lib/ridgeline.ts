@@ -185,17 +185,6 @@ export function ridges(
   })
 }
 
-/** One calendar year's nights. */
-export const yearOf = (
-  rankings: RankDay[],
-  movies: Catalog,
-  year: number
-): ChartData => ({
-  year,
-  days: rankings.filter((day) => day.date.startsWith(`${year}-`)),
-  movies,
-})
-
 /** A year's list (best-pictures-YYYY.json), over every night its movies were
  * ranked, which can run into the next year. */
 export function yearListOf(

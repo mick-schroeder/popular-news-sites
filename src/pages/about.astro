@@ -48,7 +48,7 @@ const top = (await getMovies()).find((movie) => movie.current === 1)
   {top && (
     <section aria-labelledby="read" class="flex flex-col">
       <div class="h-[min(55svh,26rem)] flex flex-col">
-        <MovieJoyplot movie={top} year={top.years.at(-1)!} />
+        <MovieJoyplot movie={top} />
       </div>
       <div class="flex max-w-3xl flex-col gap-3 px-4 pt-4 sm:px-6">
         <h2
@@ -106,11 +106,11 @@ const top = (await getMovies()).find((movie) => movie.current === 1)
       </ol>
       <p class="text-muted-foreground">
         The AI critic’s{" "}
-        <a href={prompt} class={link}>
+        <a href={prompt} target="_blank" rel="noopener" class={link}>
           instructions
         </a>{" "}
         and all the{" "}
-        <a href={SITE.code} class={link}>
+        <a href={SITE.code} target="_blank" rel="noopener" class={link}>
           source code
         </a>{" "}
         are public.
@@ -126,7 +126,12 @@ const top = (await getMovies()).find((movie) => movie.current === 1)
       </h2>
       <p>
         The lists are free to use, in Steven Lu’s{" "}
-        <a href="https://github.com/sjlu/popular-movies" class={link}>
+        <a
+          href="https://github.com/sjlu/popular-movies"
+          target="_blank"
+          rel="noopener"
+          class={link}
+        >
           popular-movies
         </a>{" "}
         format. In Radarr, add a StevenLu Custom import list and paste a URL.
@@ -183,13 +188,20 @@ const top = (await getMovies()).find((movie) => movie.current === 1)
             <TableRow>
               <TableCell className="font-semibold">{name}</TableCell>
               <TableCell>
-                <a href={`https://mdblist.com/lists/${mdblist}`} class={link}>
+                <a
+                  href={`https://mdblist.com/lists/${mdblist}`}
+                  target="_blank"
+                  rel="noopener"
+                  class={link}
+                >
                   Follow on MDBList
                 </a>
               </TableCell>
               <TableCell>
                 <a
                   href={`https://www.themoviedb.org/list/${tmdb}`}
+                  target="_blank"
+                  rel="noopener"
                   class={link}
                 >
                   Follow on TMDB
